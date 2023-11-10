@@ -1,0 +1,12 @@
+{
+  "id" : "unique_identifier",
+  "name": "Commercial name of the product",
+  "materials":
+          [
+            {
+              "materialCode": "materialUniqueIdentifier",
+              "amount": "200" // The amount will always be in grams
+            }
+          ],
+  "manufacturer": "Manufacturer name"
+}
