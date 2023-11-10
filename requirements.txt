@@ -1,3 +1,4 @@
 openai==1.2.3
 python-dotenv==1.0.0
 langchain==0.0.334
+bottle==0.12.25
