@@ -5,8 +5,9 @@
           [
             {
               "materialCode": "materialUniqueIdentifier",
-              "amount": "200" // The amount will always be in grams
+              "amount": 200 // The amount will always be in grams
             }
           ],
-  "manufacturer": "Manufacturer name"
+  "manufacturer": "Manufacturer name",
+  "co2Emission": 135 // The amount will we in kg
 }
