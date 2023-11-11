@@ -1,0 +1,8 @@
+version: "3"
+services:
+  greenloop-llm-api:
+    build: "."
+    ports:
+      - "8000:8000"
+    volumes:
+      - ".env:/home/greenloop/python_scripts/.env"
