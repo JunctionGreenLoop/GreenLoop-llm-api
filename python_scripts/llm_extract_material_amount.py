@@ -19,7 +19,7 @@ def get_conversation_to_extract_material_amount(llm):
         What is the amount of {material} contained in a {device}
 
         Format the output as json like
-        {{ "materialName" : amount }}
+        {{ "materialCode": {material} , "amount": amount}}
         The amount should be in grams, and should be as much as accurate as possible.
         Do not specify the unit of measure in the output
         ''')
@@ -118,14 +118,13 @@ def estimate_co2_emissions(llm, device):
 
     # Executes the query and returns the result
     co2_estimation = conversation(device)['text']
-    print(co2_estimation)
     return json.loads(co2_estimation)
 
 
 # Given the llm's crm json output, adapt it to the standard by generating the missing fields (co2 emissions...)
 def standardize_crm_estimation(device_id, json_output, llm):
     formatted_output = {
-      "id": device_id,
+      "name": device_id,
       "materials": json_output,
     }
 

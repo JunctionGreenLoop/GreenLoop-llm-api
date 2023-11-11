@@ -77,5 +77,5 @@ def detect_device(base64_image):
 
 if __name__ == '__main__':
     with open("random.txt", "w") as f:
-        f.write( encode_image("images.jpeg"))
+        f.write( encode_image("onTheFloor.jpg"))
     print(detect_device(encode_image("images.jpeg")))
