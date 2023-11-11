@@ -8,13 +8,15 @@ materials_amount_conversation_handler = llm.get_conversation_to_extract_material
 
 @route('/materialApi')
 def material_api():
-    # Fail if the mandatory arguments have not been passed (material, device)
-    if "material" not in request.params or "device" not in request.params:
-        response.status = 501
-        return 'No material or device given'
+    response.content_type = "application/json"
 
-    # Ask the llm to get the content
-    llm_response = llm.get_material_amount(request.params['material'], request.params['device'], materials_amount_conversation_handler)
+    # Fail if the mandatory arguments have not been passed (material, device)
+    if "device" not in request.params:
+        response.status = 501
+        return 'No device given'
+
+    # Ask the llm to estimate the content
+    llm_response = llm.get_critical_raw_material_estimation(request.params['device'], materials_amount_conversation_handler)
 
     return llm_response
 
