@@ -61,7 +61,7 @@ def get_critical_raw_material_estimation(device, conversation):
         thread.join()
         estimations.append(thread.result)
 
-    return json.dumps(estimations)
+    return estimations
 
 
 # Return the amount of material contained into the object
