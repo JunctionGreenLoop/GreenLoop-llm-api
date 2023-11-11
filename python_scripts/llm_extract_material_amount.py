@@ -106,6 +106,7 @@ def estimate_co2_emissions(llm, device):
             {{ "co2Emission" : value}}
             
             The value must be in Kg.
+            Do not specify the unit of measure in the output
             ''')
 
     # Creates the conversation object
@@ -117,6 +118,7 @@ def estimate_co2_emissions(llm, device):
 
     # Executes the query and returns the result
     co2_estimation = conversation(device)['text']
+    print(co2_estimation)
     return json.loads(co2_estimation)
 
 

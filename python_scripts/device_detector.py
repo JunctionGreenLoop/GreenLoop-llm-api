@@ -71,8 +71,11 @@ def detect_device(base64_image):
     # Make a request to the remote server
     response = requests.post(GPT_ENDPOINT, headers=prepare_headers(api_key), json=payload)
 
+    print(response.json()['choices'][0]['message']['content'])
     return response.json()['choices'][0]['message']['content']
 
 
 if __name__ == '__main__':
+    with open("random.txt", "w") as f:
+        f.write( encode_image("images.jpeg"))
     print(detect_device(encode_image("images.jpeg")))
