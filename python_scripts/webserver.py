@@ -1,9 +1,9 @@
 from bottle import route, run, request, response
-import llm_extract_material_amount as llm
+import llm_extract_material_amount as llm_api
 
 
 # We create the object used to interact with the llm
-materials_amount_conversation_handler = llm.get_conversation_to_extract_material_amount(llm.init_llm())
+llm_obj = llm_api.init_llm()
 
 
 @route('/materialApi')
@@ -16,7 +16,7 @@ def material_api():
         return 'No device given'
 
     # Ask the llm to estimate the content
-    llm_response = llm.get_critical_raw_material_estimation(request.params['device'], materials_amount_conversation_handler)
+    llm_response = llm_api.generate_api_info(request.params['device'], llm_obj)
 
     return llm_response
 

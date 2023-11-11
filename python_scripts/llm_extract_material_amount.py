@@ -19,8 +19,9 @@ def get_conversation_to_extract_material_amount(llm):
         What is the amount of {material} contained in a {device}
 
         Format the output as json like
-        {{ "materialName" : "amount" }}
-        The amount should be in grams, and should be as much as accurate as possible
+        {{ "materialName" : amount }}
+        The amount should be in grams, and should be as much as accurate as possible.
+        Do not specify the unit of measure in the output
         ''')
 
     # Creates the conversation object
@@ -74,13 +75,83 @@ def get_material_amount(material, device, conversation):
     return json_response
 
 
+# Given a device, generate the commercial information (common name and manufacturer)
+def estimate_commercial_info(llm, device):
+    # Prepares the parametrized prompt that will be used
+    prompt = PromptTemplate.from_template('''
+            What are the manufacturer and the commercial name of {device}?
+
+            Format the output as json like
+            {{ "manufacturer" : "manufacturerName", "commercialName": "commercialName"}}
+            ''')
+
+    # Creates the conversation object
+    conversation = LLMChain(
+        llm=llm,
+        prompt=prompt,
+        # verbose=True
+    )
+
+    # Executes the query and returns the result
+    return json.loads(conversation(device)['text'])
+
+
+# Given a device, estimate the related Co2 emissions
+def estimate_co2_emissions(llm, device):
+    # Prepares the parametrized prompt that will be used
+    prompt = PromptTemplate.from_template('''
+            What is the carbon footprint of the {device}?
+    
+            Format the output as json like
+            {{ "co2Emission" : value}}
+            
+            The value must be in Kg.
+            ''')
+
+    # Creates the conversation object
+    conversation = LLMChain(
+        llm=llm,
+        prompt=prompt,
+        # verbose=True
+    )
+
+    # Executes the query and returns the result
+    co2_estimation = conversation(device)['text']
+    return json.loads(co2_estimation)
+
+
+# Given the llm's crm json output, adapt it to the standard by generating the missing fields (co2 emissions...)
+def standardize_crm_estimation(device_id, json_output, llm):
+    formatted_output = {
+      "id": device_id,
+      "materials": json_output,
+    }
+
+    # Add to the output the estimation of carbon emissions
+    formatted_output.update(estimate_co2_emissions(llm, device_id))
+
+    # Add to the output the estimation of commercial names and manufacturer
+    formatted_output.update(estimate_commercial_info(llm, device_id))
+
+    return formatted_output
+
+
+# Given a device, return all the api information
+def generate_api_info(device, llm):
+    # Create a conversation used to interact with the llm
+    conversation = get_conversation_to_extract_material_amount(llm)
+
+    # Estimate the number of raw materials
+    crm_estimation = get_critical_raw_material_estimation(device, conversation)
+
+    # Standardize the output adding the missing fields
+    return standardize_crm_estimation(device, crm_estimation, llm)
+
+
 if __name__ == '__main__':
+    device = "Iphone 8"
+
     # Initialize the language model
     llm = init_llm()
 
-    # Create a conversation used to interact with it
-    conversation = get_conversation_to_extract_material_amount(llm)
-
-    print(get_critical_raw_material_estimation('Samsung Galaxy FE', conversation))
-
-
+    print(generate_api_info(device, llm))
