@@ -1,6 +1,11 @@
-from bottle import route, run, request, response
+from bottle import app, route, run, request, response
 import llm_extract_material_amount as llm_api
 import device_detector as detector
+from bottle_cors_plugin import cors_plugin
+
+# We allow every kind of CORS
+app = app()
+app.install(cors_plugin('*'))
 
 # We create the object used to interact with the llm
 llm_obj = llm_api.init_llm()
